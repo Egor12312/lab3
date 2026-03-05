@@ -2,6 +2,16 @@
 
 namespace MatrixCalculator {
   class Program {
+    private static int OperationAdd = 1;
+    private static int OperationMultiply = 2;
+    private static int OperationDetA = 3;
+    private static int OperationDetB = 4;
+    private static int OperationCompare = 5;
+    private static int OperationInverseA = 6;
+    private static int OperationInverseB = 7;
+    private static int OperationDemo = 8;
+    private static int OperationExit = 0;
+
     static void Main(string[] args)
     {
       double detA, detB;
@@ -40,41 +50,42 @@ namespace MatrixCalculator {
           try
           {
             Console.WriteLine("\n OPERATIONS ");
-            Console.WriteLine("1. A + B");
-            Console.WriteLine("2. A * B");
-            Console.WriteLine("3. Determinant of A");
-            Console.WriteLine("4. Determinant of B");
-            Console.WriteLine("5. Compare A and B");
-            Console.WriteLine("6. Inverse of A");
-            Console.WriteLine("7. Inverse of B");
-            Console.WriteLine("8. Class methods demo");
-            Console.WriteLine("0. Exit");
+            // ИСПРАВЛЕНО: Вывод значений, а не названий переменных
+            Console.WriteLine($"{OperationAdd}. A + B");
+            Console.WriteLine($"{OperationMultiply}. A * B");
+            Console.WriteLine($"{OperationDetA}. Determinant of A");
+            Console.WriteLine($"{OperationDetB}. Determinant of B");
+            Console.WriteLine($"{OperationCompare}. Compare A and B");
+            Console.WriteLine($"{OperationInverseA}. Inverse of A");
+            Console.WriteLine($"{OperationInverseB}. Inverse of B");
+            Console.WriteLine($"{OperationDemo}. Class methods demo");
+            Console.WriteLine($"{OperationExit}. Exit");
             Console.Write("Choose operation: ");
             userChoice = int.Parse(Console.ReadLine());
 
-            if (userChoice == 1)
+            if (userChoice == OperationAdd)
             {
               resultMatrix = firstMatrix + secondMatrix;
               Console.WriteLine("\nA + B:");
               Console.WriteLine(resultMatrix.ToString());
             }
-            else if (userChoice == 2)
+            else if (userChoice == OperationMultiply)
             {
               resultMatrix = firstMatrix * secondMatrix;
               Console.WriteLine("\nA * B:");
               Console.WriteLine(resultMatrix.ToString());
             }
-            else if (userChoice == 3)
+            else if (userChoice == OperationDetA)
             {
               detA = firstMatrix.Determinant();
               Console.WriteLine("\nDeterminant of A: " + detA.ToString("F4"));
             }
-            else if (userChoice == 4)
+            else if (userChoice == OperationDetB)
             {
               detB = secondMatrix.Determinant();
               Console.WriteLine("\nDeterminant of B: " + detB.ToString("F4"));
             }
-            else if (userChoice == 5)
+            else if (userChoice == OperationCompare)
             {
               Console.WriteLine("\nComparison Results:");
               Console.WriteLine("A > B: " + (firstMatrix > secondMatrix));
@@ -83,19 +94,19 @@ namespace MatrixCalculator {
               Console.WriteLine("A != B: " + (firstMatrix != secondMatrix));
               Console.WriteLine("CompareTo: " + firstMatrix.CompareTo(secondMatrix));
             }
-            else if (userChoice == 6)
+            else if (userChoice == OperationInverseA)
             {
               inverseMatrix = firstMatrix.Inverse();
               Console.WriteLine("\nInverse of A:");
               Console.WriteLine(inverseMatrix.ToString());
             }
-            else if (userChoice == 7)
+            else if (userChoice == OperationInverseB)
             {
               inverseMatrix = secondMatrix.Inverse();
               Console.WriteLine("\nInverse of B:");
               Console.WriteLine(inverseMatrix.ToString());
             }
-            else if (userChoice == 8)
+            else if (userChoice == OperationDemo)
             {
               Console.WriteLine("\n CLASS METHODS DEMONSTRATION ");
               Console.WriteLine("Equals: " + firstMatrix.Equals(secondMatrix));
@@ -117,7 +128,7 @@ namespace MatrixCalculator {
             Console.WriteLine("Unexpected Error: " + error.Message);
           }
 
-        } while (userChoice != 0);
+        } while (userChoice != OperationExit);
       }
       catch (MatrixException error)
       {

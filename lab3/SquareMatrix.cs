@@ -2,9 +2,36 @@
 
 namespace MatrixCalculator {
   class SquareMatrix {
-    private static double Epsilon = 1e-10;
-    private static int HashMultiplier = 31;
-    private static int HashPrecision = 1000;
+    private static double Epsilon;
+    private static int HashMultiplier;
+    private static int HashPrecision;
+
+    private static int MatrixSizeOne;
+    private static int MatrixSizeTwo;
+    private static int IndexOffset;
+    private static int StartIndex;
+    private static double PositiveSign;
+    private static double NegativeSign;
+    private static int CompareEqual;
+    private static int CompareLess;
+    private static int CompareGreater;
+
+    static SquareMatrix()
+    {
+      Epsilon = 1.0e-10;
+      HashMultiplier = 31;
+      HashPrecision = 1000;
+
+      MatrixSizeOne = 1;
+      MatrixSizeTwo = 2;
+      IndexOffset = 1;
+      StartIndex = 0;
+      PositiveSign = 1.0;
+      NegativeSign = -1.0;
+      CompareEqual = 0;
+      CompareLess = -1;
+      CompareGreater = 1;
+    }
 
     private int size;
     private double[,] data;
@@ -12,7 +39,9 @@ namespace MatrixCalculator {
     public SquareMatrix(int matrixSize)
     {
       if (matrixSize <= 0)
+      {
         throw new MatrixException("Error: matrix size must be positive.");
+      }
 
       size = matrixSize;
       data = new double[size, size];
@@ -41,13 +70,19 @@ namespace MatrixCalculator {
       int rowIndex, colIndex;
 
       if (left.size != right.size)
+      {
         throw new MatrixException("Error: matrices have different sizes.");
+      }
 
       SquareMatrix result = new SquareMatrix(left.size);
 
       for (rowIndex = 0; rowIndex < left.size; ++rowIndex)
+      {
         for (colIndex = 0; colIndex < left.size; ++colIndex)
+        {
           result.data[rowIndex, colIndex] = left.data[rowIndex, colIndex] + right.data[rowIndex, colIndex];
+        }
+      }
 
       return result;
     }
@@ -58,7 +93,9 @@ namespace MatrixCalculator {
       int rowIndex, colIndex;
 
       if (left.size != right.size)
+      {
         throw new MatrixException("Error: matrices have different sizes.");
+      }
 
       SquareMatrix result = new SquareMatrix(left.size);
 
@@ -68,7 +105,9 @@ namespace MatrixCalculator {
         {
           sum = 0.0;
           for (int innerIndex = 0; innerIndex < left.size; ++innerIndex)
+          {
             sum += left.data[rowIndex, innerIndex] * right.data[innerIndex, colIndex];
+          }
           result.data[rowIndex, colIndex] = sum;
         }
       }
@@ -80,7 +119,9 @@ namespace MatrixCalculator {
       double leftDet, rightDet;
 
       if (left.size != right.size)
+      {
         throw new MatrixException("Error: matrices have different sizes.");
+      }
 
       leftDet = left.Determinant();
       rightDet = right.Determinant();
@@ -92,7 +133,9 @@ namespace MatrixCalculator {
       double leftDet, rightDet;
 
       if (left.size != right.size)
+      {
         throw new MatrixException("Error: matrices have different sizes.");
+      }
 
       leftDet = left.Determinant();
       rightDet = right.Determinant();
@@ -104,23 +147,38 @@ namespace MatrixCalculator {
       int rowIndex, colIndex;
 
       if (ReferenceEquals(left, null) && ReferenceEquals(right, null))
+      {
         return true;
+      }
 
       if (ReferenceEquals(left, null) || ReferenceEquals(right, null))
+      {
         return false;
+      }
 
       if (left.size != right.size)
+      {
         return false;
+      }
 
       for (rowIndex = 0; rowIndex < left.size; ++rowIndex)
+      {
         for (colIndex = 0; colIndex < left.size; ++colIndex)
+        {
           if (Math.Abs(left.data[rowIndex, colIndex] - right.data[rowIndex, colIndex]) > Epsilon)
+          {
             return false;
+          }
+        }
+      }
 
       return true;
     }
 
-    public static bool operator !=(SquareMatrix left, SquareMatrix right) => !(left == right);
+    public static bool operator !=(SquareMatrix left, SquareMatrix right)
+    {
+      return !(left == right);
+    }
 
     public override bool Equals(object obj)
     {
@@ -136,8 +194,12 @@ namespace MatrixCalculator {
       hash = size;
 
       for (rowIndex = 0; rowIndex < size; ++rowIndex)
+      {
         for (colIndex = 0; colIndex < size; ++colIndex)
+        {
           hash = hash * HashMultiplier + (int)(data[rowIndex, colIndex] * HashPrecision);
+        }
+      }
 
       return hash;
     }
@@ -148,33 +210,46 @@ namespace MatrixCalculator {
       int subColIndex;
       int rowIndex, colIndex, origColIndex;
 
-      if (size == 1)
-        return data[0, 0];
+      if (size == MatrixSizeOne)
+      {
+        return data[StartIndex, StartIndex];
+      }
 
-      if (size == 2)
-        return data[0, 0] * data[1, 1] - data[0, 1] * data[1, 0];
+      if (size == MatrixSizeTwo)
+      {
+        return data[StartIndex, StartIndex] * data[MatrixSizeOne, MatrixSizeOne] - data[StartIndex, MatrixSizeOne] * data[MatrixSizeOne, StartIndex];
+      }
 
       det = 0.0;
       SquareMatrix subMatrix;
 
       for (colIndex = 0; colIndex < size; ++colIndex)
       {
-        subMatrix = new SquareMatrix(size - 1);
+        subMatrix = new SquareMatrix(size - MatrixSizeOne);
 
-        for (rowIndex = 1; rowIndex < size; ++rowIndex)
+        for (rowIndex = MatrixSizeOne; rowIndex < size; ++rowIndex)
         {
           subColIndex = 0;
           for (origColIndex = 0; origColIndex < size; ++origColIndex)
           {
             if (origColIndex == colIndex)
+            {
               continue;
-            subMatrix.data[rowIndex - 1, subColIndex] = data[rowIndex, origColIndex];
+            }
+            subMatrix.data[rowIndex - MatrixSizeOne, subColIndex] = data[rowIndex, origColIndex];
             ++subColIndex;
           }
         }
 
-        sign = (colIndex % 2 == 0) ? 1.0 : -1.0;
-        det += sign * data[0, colIndex] * subMatrix.Determinant();
+        if (colIndex % MatrixSizeTwo == 0)
+        {
+          sign = PositiveSign;
+        }
+        else
+        {
+          sign = NegativeSign;
+        }
+        det += sign * data[StartIndex, colIndex] * subMatrix.Determinant();
       }
 
       return det;
@@ -190,14 +265,16 @@ namespace MatrixCalculator {
 
       det = Determinant();
       if (Math.Abs(det) < Epsilon)
+      {
         throw new MatrixException("Error: matrix is singular. Inverse does not exist.");
+      }
 
       SquareMatrix result = new SquareMatrix(size);
       SquareMatrix subMatrix;
 
-      if (size == 1)
+      if (size == MatrixSizeOne)
       {
-        result.data[0, 0] = 1.0 / data[0, 0];
+        result.data[StartIndex, StartIndex] = PositiveSign / data[StartIndex, StartIndex];
         return result;
       }
 
@@ -205,19 +282,23 @@ namespace MatrixCalculator {
       {
         for (colIndex = 0; colIndex < size; ++colIndex)
         {
-          subMatrix = new SquareMatrix(size - 1);
+          subMatrix = new SquareMatrix(size - MatrixSizeOne);
           subRowIndex = 0;
 
           for (origRowIndex = 0; origRowIndex < size; ++origRowIndex)
           {
             if (origRowIndex == rowIndex)
+            {
               continue;
+            }
 
             subColIndex = 0;
             for (origColIndex = 0; origColIndex < size; ++origColIndex)
             {
               if (origColIndex == colIndex)
+              {
                 continue;
+              }
 
               subMatrix.data[subRowIndex, subColIndex] = data[origRowIndex, origColIndex];
               ++subColIndex;
@@ -225,7 +306,14 @@ namespace MatrixCalculator {
             ++subRowIndex;
           }
 
-          sign = ((rowIndex + colIndex) % 2 == 0) ? 1.0 : -1.0;
+          if ((rowIndex + colIndex) % MatrixSizeTwo == 0)
+          {
+            sign = PositiveSign;
+          }
+          else
+          {
+            sign = NegativeSign;
+          }
           cofactor = sign * subMatrix.Determinant();
           result.data[colIndex, rowIndex] = cofactor / det;
         }
@@ -239,18 +327,32 @@ namespace MatrixCalculator {
       double thisDet, otherDet;
 
       if (other == null)
-        return 1;
+      {
+        return CompareGreater;
+      }
 
       thisDet = Determinant();
       otherDet = other.Determinant();
 
       if (Math.Abs(thisDet - otherDet) < Epsilon)
-        return 0;
+      {
+        return CompareEqual;
+      }
 
-      return thisDet < otherDet ? -1 : 1;
+      if (thisDet < otherDet)
+      {
+        return CompareLess;
+      }
+      else
+      {
+        return CompareGreater;
+      }
     }
 
-    public bool Equals(SquareMatrix other) => this == other;
+    public bool Equals(SquareMatrix other)
+    {
+      return this == other;
+    }
 
     public SquareMatrix Clone()
     {
@@ -270,7 +372,9 @@ namespace MatrixCalculator {
       {
         result += "[ ";
         for (colIndex = 0; colIndex < size; ++colIndex)
+        {
           result += data[rowIndex, colIndex].ToString("F2") + " ";
+        }
         result += "]\n";
       }
 
