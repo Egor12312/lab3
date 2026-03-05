@@ -5,7 +5,6 @@ namespace MatrixCalculator {
     private static double Epsilon;
     private static int HashMultiplier;
     private static int HashPrecision;
-
     private static int MatrixSizeOne;
     private static int MatrixSizeTwo;
     private static int IndexOffset;

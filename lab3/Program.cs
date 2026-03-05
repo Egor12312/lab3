@@ -2,15 +2,28 @@
 
 namespace MatrixCalculator {
   class Program {
-    private static int OperationAdd = 1;
-    private static int OperationMultiply = 2;
-    private static int OperationDetA = 3;
-    private static int OperationDetB = 4;
-    private static int OperationCompare = 5;
-    private static int OperationInverseA = 6;
-    private static int OperationInverseB = 7;
-    private static int OperationDemo = 8;
-    private static int OperationExit = 0;
+    private static int OperationAdd;
+    private static int OperationMultiply;
+    private static int OperationDetA;
+    private static int OperationDetB;
+    private static int OperationCompare;
+    private static int OperationInverseA;
+    private static int OperationInverseB;
+    private static int OperationDemo;
+    private static int OperationExit;
+
+    static Program()
+    {
+      OperationAdd = 1;
+      OperationMultiply = 2;
+      OperationDetA = 3;
+      OperationDetB = 4;
+      OperationCompare = 5;
+      OperationInverseA = 6;
+      OperationInverseB = 7;
+      OperationDemo = 8;
+      OperationExit = 0;
+    }
 
     static void Main(string[] args)
     {
@@ -50,7 +63,6 @@ namespace MatrixCalculator {
           try
           {
             Console.WriteLine("\n OPERATIONS ");
-            // ИСПРАВЛЕНО: Вывод значений, а не названий переменных
             Console.WriteLine($"{OperationAdd}. A + B");
             Console.WriteLine($"{OperationMultiply}. A * B");
             Console.WriteLine($"{OperationDetA}. Determinant of A");
